@@ -42,18 +42,12 @@ class Scraping:
     df = pd.DataFrame(self.data)
     df = df[~df["titulo"].str.lower().str.contains("não houve exibição")]
     df.loc[:, "titulo"] = df['titulo'].apply(lambda x: re.sub(r'\(.*', '', x).strip())
+    df.loc[:, "titulo"] = df['titulo'].apply(lambda x: x.split('|')[0] if '|' in x else x)
     df.loc[:, "mes"] = df['mes'].apply(lambda x:  'Março' if x == 'Mar' else x)
-
     df.drop(df[df["titulo"] == ''].index, inplace=True)
    
     self.sessao_da_tarde_df = df 
   
   def save_data(self) -> None:
-    self.sessao_da_tarde_df.to_csv("./data/sessao_da_tarde.csv")
+    self.sessao_da_tarde_df.to_csv("./data/sessao_da_tarde.csv", index=False)
 
-
-scraping = Scraping()
-
-scraping.scraping_data()
-scraping.processing()
-scraping.save_data()
