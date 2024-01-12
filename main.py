@@ -1,10 +1,10 @@
-from scraping.scraping import Scraping
+from app.crawler import Scraping
 
-def init_scraping():
+def init():
     scraping = Scraping()
     scraping.scraping_data()
     scraping.processing()
     scraping.save_data()
 
 if __name__ == "__main__":
-    init_scraping()
+    init()
