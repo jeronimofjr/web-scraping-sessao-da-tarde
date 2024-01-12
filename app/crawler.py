@@ -40,7 +40,7 @@ class Scraping:
     
   def processing(self) -> None:
     df = pd.DataFrame(self.data)
-    df = df[~df["titulo"].str.lower().str.contains("não houve exibição|festival de férias")]
+    df = df[~df["titulo"].str.lower().str.contains("não houve exibição|Festival de Férias")]
     df.loc[:, "titulo"] = df['titulo'].apply(lambda x: re.sub(r'\(.*', '', x).strip())
     df.loc[:, "titulo"] = df['titulo'].apply(lambda x: x.split('|')[0] if '|' in x else x)
     df.loc[:, "mes"] = df['mes'].apply(lambda x:  'Março' if x == 'Mar' else x)
