@@ -15,12 +15,14 @@ class Scraping:
     
 
   def get_object_scraping(self):
+    """Retorna objeto BeautifulSoup"""
     r = requests.get(url)
     soup = BeautifulSoup(r.content, "html.parser")
     s = soup.find('div', class_="mw-parser-output")
     return s
 
   def filter_data_scraping(self, resp, ano_tag, mes_tag) -> None:
+    """Processa ruídos no texto que vem diretamente do scraping da página web"""
     self.data["titulo"].append(resp[1].strip())
     self.data["ano"].append(re.findall(r'\d+', ano_tag.text)[0] )
     self.data["mes"].append(mes_tag.text.replace('\u200b', ''))
@@ -28,6 +30,7 @@ class Scraping:
     self.data["dia"].append(resp[0].strip().split('/')[0])
 
   def scraping_data(self) -> None:
+    """Realiza a captura dos dados da página"""
     for ano_tag in self.soup_object_scraping.find_all('h2')[2:37]:
       meses_tag = ano_tag.find_next_siblings('h3', limit=12)
       for mes_tag in meses_tag:
@@ -39,8 +42,9 @@ class Scraping:
     
     
   def processing(self) -> None:
+    """Corrige, limpa, remove erros nos dados obtidos e transforma em um dataframe"""
     df = pd.DataFrame(self.data)
-    df = df[~df["titulo"].str.lower().str.contains("não houve exibição|Festival de Férias")]
+    df = df[~df["titulo"].str.lower().str.contains("não houve exibição|festival de férias")]
     df.loc[:, "titulo"] = df['titulo'].apply(lambda x: re.sub(r'\(.*', '', x).strip())
     df.loc[:, "titulo"] = df['titulo'].apply(lambda x: x.split('|')[0] if '|' in x else x)
     df.loc[:, "mes"] = df['mes'].apply(lambda x:  'Março' if x == 'Mar' else x)
@@ -49,5 +53,6 @@ class Scraping:
     self.sessao_da_tarde_df = df 
   
   def save_data(self) -> None:
+    """Salva os dados em arquivo .csv"""
     self.sessao_da_tarde_df.to_csv("./data/sessao_da_tarde.csv", index=False)
 

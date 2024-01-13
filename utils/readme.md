@@ -1,0 +1,1 @@
+## Contém as funções de processamento de texto que serão usadas na EDA
