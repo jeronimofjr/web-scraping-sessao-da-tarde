@@ -1,0 +1,1 @@
+## Contém os métodos que realizam o Scraping e processam os dados
